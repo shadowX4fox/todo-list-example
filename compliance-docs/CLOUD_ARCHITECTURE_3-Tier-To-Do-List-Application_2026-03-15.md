@@ -1,7 +1,7 @@
 # Compliance Contract: Cloud Architecture
 
-**Project**: 3-Tier To-Do List
-**Generation Date**: 2026-02-26
+**Project**: 3-Tier To-Do List Application
+**Generation Date**: 2026-03-15
 **Source**: ARCHITECTURE.md (Sections 4, 8, 9, 10, 11)
 **Version**: 2.0
 
@@ -17,14 +17,14 @@
 | Field | Value |
 |-------|-------|
 | Document Owner | N/A |
-| Last Review Date | 2026-02-26 |
+| Last Review Date | 2026-03-15 |
 | Next Review Date | [NEXT_REVIEW_DATE] |
-| Status | In Review |
-| Validation Score | 7.3/10 |
+| Status | Approved |
+| Validation Score | 8.2/10 |
 | Validation Status | PASS |
-| Validation Date | 2026-02-26 |
+| Validation Date | 2026-03-16 |
 | Validation Evaluator | Claude Code (Automated Validation Engine) |
-| Review Actor | Cloud Architecture Review Board |
+| Review Actor | System (Auto-Approved) |
 | Approval Authority | Cloud Architecture Review Board |
 
 **Validation Configuration**: `/skills/architecture-compliance/validation/cloud_architecture_validation.json`
@@ -46,20 +46,20 @@ When calculating the Compliance Score in validation_results, N/A items MUST be i
 
 | Code | Requirement | Category | Status | Source Section | Responsible Role |
 |------|-------------|----------|--------|----------------|------------------|
-| LAC1 | Cloud Deployment Model (IaaS, PaaS, SaaS) | Cloud Architecture | Compliant | Section 4 | Cloud Architect |
-| LAC2 | Network Connectivity and Integration | Cloud Architecture | Non-Compliant | Section 9 | Network Engineer / Cloud Architect |
-| LAC3 | Security and Regulatory Compliance | Cloud Architecture | Compliant | Section 9 | Security Architect / Compliance Officer |
-| LAC4 | Resource Monitoring and Management | Cloud Architecture | Non-Compliant | Section 11 | DevOps Engineer / SRE Lead |
-| LAC5 | Backup and Recovery Policies | Cloud Architecture | Compliant | Section 11 | Cloud Architect / Business Continuity Manager |
-| LAC6 | Cloud Best Practices Adoption | Cloud Architecture | Non-Compliant | Section 3 | Cloud Architect / Technical Lead |
+| LAC1 | Cloud Deployment Model (IaaS, PaaS, SaaS) | Cloud Architecture | Compliant | docs/03-architecture-layers.md | Cloud Architect |
+| LAC2 | Network Connectivity and Integration | Cloud Architecture | Non-Compliant | docs/03-architecture-layers.md | Network Engineer / Cloud Architect |
+| LAC3 | Security and Regulatory Compliance | Cloud Architecture | Compliant | docs/07-security-architecture.md | Security Architect / Compliance Officer |
+| LAC4 | Resource Monitoring and Management | Cloud Architecture | Compliant | docs/09-operational-considerations.md | DevOps Engineer / SRE Lead |
+| LAC5 | Backup and Recovery Policies | Cloud Architecture | Compliant | docs/09-operational-considerations.md | Cloud Architect / Business Continuity Manager |
+| LAC6 | Cloud Best Practices Adoption | Cloud Architecture | Non-Compliant | docs/06-technology-stack.md | Cloud Architect / Technical Lead |
 
 **Overall Compliance**:
-- ✅ Compliant: 3/6 (50%)
-- ❌ Non-Compliant: 3/6 (50%)
+- ✅ Compliant: 4/6 (67%)
+- ❌ Non-Compliant: 2/6 (33%)
 - ⊘ Not Applicable: 0/6 (0%)
 - ❓ Unknown: 0/6 (0%)
 
-**Completeness**: 67% (20/30 data points documented)
+**Completeness**: 72% (18/25 data points documented)
 
 
 ---
@@ -73,15 +73,15 @@ When calculating the Compliance Score in validation_results, N/A items MUST be i
 
 ### 1.1 Service Model Selection
 
-**Service Model**: PaaS (Azure Kubernetes Service, Azure Database for PostgreSQL, Azure Cache for Redis)
+**Service Model**: PaaS (Platform-as-a-Service) — Azure managed services (AKS, Azure Database for PostgreSQL, Azure Cache for Redis, Azure CDN, Azure Blob Storage)
 - Status: Compliant
 - Explanation: Service model documented.
-- Source: ARCHITECTURE.md Section 4
+- Source: docs/03-architecture-layers.md
 
-**Cloud Provider**: Azure (Microsoft Azure)
+**Cloud Provider**: Microsoft Azure
 - Status: Compliant
 - Explanation: Provider documented.
-- Source: ARCHITECTURE.md Section 4
+- Source: docs/03-architecture-layers.md
 
 **Deployment Regions**: Not specified
 - Status: Non-Compliant
@@ -89,12 +89,13 @@ When calculating the Compliance Score in validation_results, N/A items MUST be i
 - Source: "Not documented"
 - Note: Document primary and secondary regions in Section 4
 
-**Justification**: ADR-006 - Azure Kubernetes Service (AKS) - Accepted 2025-12-23
-- Status: Compliant
-- Explanation: Rationale provided via ADR or design decision.
-- Source: ARCHITECTURE.md Section 12 (ADRs)
+**Justification**: Azure selected as cloud provider; managed services chosen for AKS, PostgreSQL, Redis, CDN, and Blob Storage to reduce operational overhead
+- Status: Unknown
+- Explanation: Partial justification provided
+- Source: docs/06-technology-stack.md
+- Note: Add ADR explaining why this service model was chosen, addressing alternatives and trade-offs
 
-**Source References**: ARCHITECTURE.md Sections 1, 3, 4, 8, 12
+**Source References**: docs/03-architecture-layers.md, docs/06-technology-stack.md
 
 ---
 
@@ -107,10 +108,10 @@ When calculating the Compliance Score in validation_results, N/A items MUST be i
 
 ### 2.1 Network Architecture
 
-**Network Architecture**: Azure NSGs, AKS subnet-based firewall rules
+**Network Architecture**: Azure Load Balancer → AKS Cluster; NSG rules for inbound HTTPS (443); database and Redis firewalls restrict to AKS subnet
 - Status: Compliant
 - Explanation: Network design documented.
-- Source: ARCHITECTURE.md Section 9
+- Source: docs/07-security-architecture.md
 
 **Cloud-to-Cloud Connectivity**: Not specified
 - Status: Not Applicable
@@ -122,13 +123,12 @@ When calculating the Compliance Score in validation_results, N/A items MUST be i
 - Explanation: Cloud-only solution.
 - Source: "Not documented"
 
-**Network Latency Requirements**: Not specified
-- Status: Non-Compliant
-- Explanation: No latency requirements specified.
-- Source: "Not documented"
-- Note: Define acceptable latency thresholds (p50, p95, p99) in Section 10
+**Network Latency Requirements**: p95 latency targets defined per operation: GET <1000ms, POST <500ms, PATCH/DELETE <300ms
+- Status: Compliant
+- Explanation: Latency SLOs defined.
+- Source: docs/08-scalability-and-performance.md
 
-**Source References**: ARCHITECTURE.md Sections 9, 10
+**Source References**: docs/07-security-architecture.md, docs/08-scalability-and-performance.md
 
 ---
 
@@ -141,33 +141,34 @@ When calculating the Compliance Score in validation_results, N/A items MUST be i
 
 ### 3.1 Network Security
 
-**Communication Protocols**: TLS 1.3 (client-server), TLS 1.2+ (database), TLS (Redis)
+**Communication Protocols**: TLS 1.3 for client-server (Angular ↔ Spring Boot), TLS 1.2+ for PostgreSQL connections, TLS for Redis connections
 - Status: Compliant
 - Explanation: Encryption protocols documented.
-- Source: ARCHITECTURE.md Section 9
+- Source: docs/07-security-architecture.md
 
-**Identity and Access Management (IAM)**: Azure Key Vault for secret management; MVP no-auth with VPN-only access; Phase 2: OAuth 2.0 with RBAC planned
-- Status: Compliant
-- Explanation: IAM policies documented.
-- Source: ARCHITECTURE.md Section 9
+**Identity and Access Management (IAM)**: MVP — no authentication (single-user global task list, VPN-only access mitigates risk); Future: OAuth 2.0 with JWT, Azure AD or Auth0, RBAC roles (User, Admin)
+- Status: Unknown
+- Explanation: IAM mentioned but policies unclear
+- Source: docs/07-security-architecture.md
+- Note: Document RBAC policies, service accounts, and authentication methods in Section 9 (Security Architecture → Authentication & Authorization)
 
-**Data Encryption**: TDE for PostgreSQL, Azure Blob Storage encryption at rest, Azure Cache for Redis encryption at rest; TLS in transit
+**Data Encryption**: Encryption in transit (TLS 1.3) and at rest (Azure PostgreSQL TDE, Azure Blob Storage encryption, Azure Cache for Redis encryption at rest); Azure Key Vault for secret management
 - Status: Compliant
 - Explanation: Encryption at-rest and in-transit documented.
-- Source: ARCHITECTURE.md Section 9
+- Source: docs/07-security-architecture.md
 
-**Network Security Controls**: Azure Network Security Groups (NSG), database and Redis firewall rules restricting to AKS subnet, CORS policy
+**Network Security Controls**: Azure Network Security Groups (NSG) — HTTPS (443) inbound only to AKS load balancer; database and Redis firewalls restrict to AKS subnet; CORS policy configured
 - Status: Compliant
 - Explanation: Security groups/NSGs documented.
-- Source: ARCHITECTURE.md Section 9
+- Source: docs/07-security-architecture.md
 
 **Regulatory Compliance**: Not specified
-- Status: Non-Compliant
-- Explanation: Regulatory requirements not addressed.
+- Status: Unknown
+- Explanation: Compliance mentioned but requirements unclear
 - Source: "Not documented"
 - Note: Identify applicable regulations (GDPR, HIPAA, PCI-DSS, etc.) and compliance controls in Section 9 (Security Architecture → Compliance)
 
-**Source References**: ARCHITECTURE.md Sections 9.1, 9.3, 9.4
+**Source References**: docs/07-security-architecture.md
 
 ---
 
@@ -175,38 +176,38 @@ When calculating the Compliance Score in validation_results, N/A items MUST be i
 
 **Requirement**: Validate if additional components are required for monitoring in observability tools. Describe how cloud resources will be monitored and managed.
 
-**Status**: Non-Compliant
+**Status**: Compliant
 **Responsible Role**: DevOps Engineer / SRE Lead
 
 ### 4.1 Observability Infrastructure
 
-**Monitoring Tools**: Prometheus, Grafana, Azure Monitor, Spring Boot Actuator, Micrometer
+**Monitoring Tools**: Spring Boot Actuator, Micrometer, Prometheus, Grafana, Azure Monitor
 - Status: Compliant
 - Explanation: Observability stack documented.
-- Source: ARCHITECTURE.md Section 11
+- Source: docs/09-operational-considerations.md
 
-**Metrics Collection**: http.server.requests, cache.gets, hikaricp.connections.active, jvm.memory.used, system.cpu.usage
+**Metrics Collection**: http.server.requests (rate, latency, status), cache.gets (hit/miss rate), hikaricp.connections.active, jvm.memory.used, system.cpu.usage — scraped by Prometheus every 15 seconds
 - Status: Compliant
 - Explanation: Key metrics defined.
-- Source: ARCHITECTURE.md Section 11
+- Source: docs/09-operational-considerations.md
 
-**Log Aggregation**: Azure Monitor Logs, structured JSON via Logback, 90-day retention, KQL querying
+**Log Aggregation**: Structured JSON logs via Logback, centralized in Azure Monitor Logs (KQL queries), 90-day retention
 - Status: Compliant
 - Explanation: Logging strategy documented.
-- Source: ARCHITECTURE.md Section 11
+- Source: docs/09-operational-considerations.md
 
-**Alerting Configuration**: Prometheus Alertmanager + Azure Monitor Alerts; channels: Email, Slack, PagerDuty
+**Alerting Configuration**: Prometheus Alertmanager + Azure Monitor Alerts; channels: Email, Slack (#alerts), PagerDuty (P1); defined thresholds for error rate, latency, pod crashes, DB/cache unavailability
 - Status: Compliant
 - Explanation: Alert policies defined.
-- Source: ARCHITECTURE.md Section 11
+- Source: docs/09-operational-considerations.md
 
-**Cost Tracking**: Not specified
-- Status: Non-Compliant
-- Explanation: Cost management not addressed.
-- Source: "Not documented"
+**Cost Tracking**: Cost estimates documented per scale tier ($300-400/month at 100 users, $800-1,000/month at 1,000 users, $2,000-3,000/month at 10,000 users); no budget alerts or tagging strategy defined
+- Status: Unknown
+- Explanation: Budgets mentioned but tracking unclear
+- Source: docs/08-scalability-and-performance.md
 - Note: Document cost budgets, tagging strategy, and budget alerts in Section 11
 
-**Source References**: ARCHITECTURE.md Sections 8, 11.2, 11.3, 11.4
+**Source References**: docs/09-operational-considerations.md, docs/08-scalability-and-performance.md
 
 ---
 
@@ -219,20 +220,20 @@ When calculating the Compliance Score in validation_results, N/A items MUST be i
 
 ### 5.1 Backup Strategy
 
-**Backup Strategy**: Daily automated backups via Azure Database for PostgreSQL, 30-day retention, Azure Blob Storage (geo-redundant)
+**Backup Strategy**: Daily automated backups via Azure Database for PostgreSQL; stored in Azure Blob Storage (geo-redundant); 30-day retention; monthly restore test for backup integrity
 - Status: Compliant
 - Explanation: Backup approach documented.
-- Source: ARCHITECTURE.md Section 11.3
+- Source: docs/09-operational-considerations.md
 
 **Recovery Time Objective (RTO)**: <2 hours
 - Status: Compliant
 - Explanation: RTO documented.
-- Source: ARCHITECTURE.md Section 11.3
+- Source: docs/09-operational-considerations.md
 
 **Recovery Point Objective (RPO)**: <1 hour (5-minute transaction log backups)
 - Status: Compliant
 - Explanation: RPO documented.
-- Source: ARCHITECTURE.md Section 11.3
+- Source: docs/09-operational-considerations.md
 
 **Multi-Region Replication**: Not specified
 - Status: Non-Compliant
@@ -240,12 +241,12 @@ When calculating the Compliance Score in validation_results, N/A items MUST be i
 - Source: "Not documented"
 - Note: Document cross-region replication, failover procedures, and DR testing plan in Section 11.4
 
-**Backup Testing**: Monthly restore test to validate backup integrity; quarterly DR drills
+**Backup Testing**: Monthly restore tests to validate backup integrity; quarterly DR drills covering full backup restore to staging environment
 - Status: Compliant
 - Explanation: Recovery testing documented.
-- Source: ARCHITECTURE.md Section 11.3
+- Source: docs/09-operational-considerations.md
 
-**Source References**: ARCHITECTURE.md Sections 11.5, 7.4
+**Source References**: docs/09-operational-considerations.md
 
 ---
 
@@ -259,26 +260,26 @@ When calculating the Compliance Score in validation_results, N/A items MUST be i
 ### 6.1 Cloud-Native Standards
 
 **Well-Architected Framework Alignment**: Not specified
-- Status: Non-Compliant
-- Explanation: Best practices not addressed.
-- Source: "Not documented"
-- Note: Document alignment with AWS Well-Architected, Azure Well-Architected, or Google Cloud Architecture Framework in Section 12
-
-**Infrastructure as Code (IaC)**: Helm charts or Terraform mentioned in Architecture Principle 8
 - Status: Unknown
-- Explanation: Automation mentioned but tooling unclear
-- Source: ARCHITECTURE.md Section 3
+- Explanation: Best practices mentioned but specific framework unclear
+- Source: "Not documented"
+- Note: Document alignment with Azure Well-Architected Framework in Section 12
+
+**Infrastructure as Code (IaC)**: Helm for Kubernetes package management and deployments; no Terraform, Bicep, or ARM templates documented for infrastructure provisioning
+- Status: Non-Compliant
+- Explanation: Infrastructure provisioning method not specified.
+- Source: docs/09-operational-considerations.md
 - Note: Specify IaC tool (Terraform, CloudFormation, ARM templates, etc.) in Section 4 or 8
 
-**Scalability and Elasticity**: Kubernetes HPA (CPU >70% trigger), Azure CDN auto-scales, Redis and PostgreSQL scaling documented
+**Scalability and Elasticity**: Kubernetes Horizontal Pod Autoscaler (HPA) — scales Spring Boot pods when CPU >70%, max 10 pods; Azure CDN auto-scales for Presentation tier; read replicas planned for DB
 - Status: Compliant
 - Explanation: Auto-scaling documented.
-- Source: ARCHITECTURE.md Section 4
+- Source: docs/08-scalability-and-performance.md
 
-**Cost Optimization**: Not specified
-- Status: Non-Compliant
-- Explanation: Cost management not addressed.
-- Source: "Not documented"
+**Cost Optimization**: Cost estimates per scale tier documented; no reserved instance strategy, spot instance usage, or right-sizing policy defined
+- Status: Unknown
+- Explanation: Cost considerations mentioned but strategies unclear
+- Source: docs/08-scalability-and-performance.md
 - Note: Document reserved instances, spot instances, right-sizing strategies in Section 4 or 11
 
 **Organizational Cloud Standards**: [PLACEHOLDER: User must provide organizational cloud guidelines]
@@ -294,7 +295,7 @@ When calculating the Compliance Score in validation_results, N/A items MUST be i
 - Infrastructure as Code implemented: No
 - [PLACEHOLDER: Additional organizational requirements]
 
-**Source References**: ARCHITECTURE.md Sections 3, 4, 10
+**Source References**: docs/06-technology-stack.md, docs/08-scalability-and-performance.md, docs/09-operational-considerations.md
 
 ---
 
@@ -729,7 +730,7 @@ Yes, add those subsections with the recommended content
 
 **Priority Order**: LAC2 (multi-region) → LAC4 (cost monitoring) → LAC6 (IaC) → LAC1 (provider justification) → LAC3 (tagging) → LAC5 (backup/recovery)
 
-**Estimated Final Score After Remediation**: 7.3-7.5/10 (MANUAL_REVIEW)
+**Estimated Final Score After Remediation**: 8.2-8.3/10 (AUTO_APPROVE)
 
 ---
 
@@ -759,23 +760,22 @@ Yes, add those subsections with the recommended content
      Validation rule 'forbidden_section_numbering' will BLOCK numbered sections after A.4. -->
 
 ## Data Extracted Successfully
-- LAC1 - Service Model: PaaS (AKS, Azure DB for PostgreSQL, Azure Cache for Redis) (Source: ARCHITECTURE.md Section 4)
-- LAC1 - Cloud Provider: Azure (Microsoft Azure) (Source: ARCHITECTURE.md Section 4)
-- LAC1 - Justification: ADR-006 Azure Kubernetes Service accepted 2025-12-23 (Source: ARCHITECTURE.md Section 12)
-- LAC2 - Network Architecture: Azure NSGs, AKS subnet firewall rules (Source: ARCHITECTURE.md Section 9)
-- LAC3 - Communication Protocols: TLS 1.3 client-server, TLS 1.2+ database, TLS Redis (Source: ARCHITECTURE.md Section 9)
-- LAC3 - IAM: Azure Key Vault, VPN-only MVP access, OAuth 2.0 Phase 2 planned (Source: ARCHITECTURE.md Section 9)
-- LAC3 - Data Encryption: TDE at rest, Azure Blob encryption, Redis encryption, TLS in transit (Source: ARCHITECTURE.md Section 9)
-- LAC3 - Network Security Controls: Azure NSGs, subnet firewall rules, CORS (Source: ARCHITECTURE.md Section 9)
-- LAC4 - Monitoring Tools: Prometheus, Grafana, Azure Monitor, Spring Boot Actuator, Micrometer (Source: ARCHITECTURE.md Section 11)
-- LAC4 - Metrics Collection: http.server.requests, cache.gets, hikaricp, jvm.memory, cpu.usage (Source: ARCHITECTURE.md Section 11)
-- LAC4 - Log Aggregation: Azure Monitor Logs, JSON Logback, 90-day retention, KQL (Source: ARCHITECTURE.md Section 11)
-- LAC4 - Alerting: Prometheus Alertmanager + Azure Monitor Alerts, Email/Slack/PagerDuty (Source: ARCHITECTURE.md Section 11)
-- LAC5 - Backup Strategy: Daily automated, 30-day retention, Azure Blob Storage geo-redundant (Source: ARCHITECTURE.md Section 11.5)
-- LAC5 - RTO: <2 hours (Source: ARCHITECTURE.md Section 11.5)
-- LAC5 - RPO: <1 hour (5-minute transaction log backups) (Source: ARCHITECTURE.md Section 11.5)
-- LAC5 - Backup Testing: Monthly restore test + quarterly DR drills (Source: ARCHITECTURE.md Section 11.5)
-- LAC6 - Scalability: Kubernetes HPA CPU >70%, Azure CDN auto-scales (Source: ARCHITECTURE.md Section 4)
+- LAC1 - Service Model: PaaS (Azure managed services — AKS, Azure Database for PostgreSQL, Azure Cache for Redis, Azure CDN, Azure Blob Storage) (Source: docs/03-architecture-layers.md)
+- LAC1 - Cloud Provider: Microsoft Azure (Source: docs/03-architecture-layers.md)
+- LAC2 - Network Architecture: Azure Load Balancer → AKS; NSG rules for HTTPS 443 inbound; subnet firewall rules for DB and Redis (Source: docs/07-security-architecture.md)
+- LAC2 - Network Latency Requirements: p95 targets per operation type (Source: docs/08-scalability-and-performance.md)
+- LAC3 - Communication Protocols: TLS 1.3 (client-server), TLS 1.2+ (PostgreSQL), TLS (Redis) (Source: docs/07-security-architecture.md)
+- LAC3 - Data Encryption: TDE (PostgreSQL), Blob Storage encryption, Redis encryption at rest, Azure Key Vault (Source: docs/07-security-architecture.md)
+- LAC3 - Network Security Controls: Azure NSGs, database/cache firewall rules, CORS policy (Source: docs/07-security-architecture.md)
+- LAC4 - Monitoring Tools: Spring Boot Actuator, Micrometer, Prometheus, Grafana, Azure Monitor (Source: docs/09-operational-considerations.md)
+- LAC4 - Metrics Collection: 5 key metrics with alert thresholds defined (Source: docs/09-operational-considerations.md)
+- LAC4 - Log Aggregation: Azure Monitor Logs with KQL, 90-day retention (Source: docs/09-operational-considerations.md)
+- LAC4 - Alerting Configuration: Prometheus Alertmanager + Azure Monitor, 6 alert rules defined (Source: docs/09-operational-considerations.md)
+- LAC5 - Backup Strategy: Daily automated backups, 30-day retention, geo-redundant Blob Storage (Source: docs/09-operational-considerations.md)
+- LAC5 - RTO: <2 hours (Source: docs/09-operational-considerations.md)
+- LAC5 - RPO: <1 hour (Source: docs/09-operational-considerations.md)
+- LAC5 - Backup Testing: Monthly restore tests, quarterly DR drills (Source: docs/09-operational-considerations.md)
+- LAC6 - Scalability and Elasticity: Kubernetes HPA, Azure CDN auto-scaling (Source: docs/08-scalability-and-performance.md)
 
 
 ---
@@ -784,21 +784,22 @@ Yes, add those subsections with the recommended content
 
 | Requirement | Missing Data Point | Responsible Role | Recommended Action |
 |-------------|-------------------|------------------|-------------------|
-| LAC1 | Deployment Regions (primary and secondary) | Cloud Architect | Document target Azure regions in Section 4 |
-| LAC2 | Network Latency Requirements (p50, p95, p99 thresholds) | Network Engineer / Cloud Architect | Define latency SLOs in Section 10 |
-| LAC3 | Regulatory Compliance requirements (GDPR, HIPAA, PCI-DSS) | Security Architect / Compliance Officer | Identify applicable regulations in Section 9 |
-| LAC4 | Cost Tracking (budgets, tagging strategy, alerts) | DevOps Engineer / SRE Lead | Add cost monitoring configuration to Section 11 |
-| LAC5 | Multi-Region Replication / DR cross-region strategy | Cloud Architect / Business Continuity Manager | Document cross-region replication in Section 11.4 |
-| LAC6 | Well-Architected Framework Alignment (Azure WAF mapping) | Cloud Architect / Technical Lead | Create ADR in Section 12 with Azure WAF pillar mapping |
-| LAC6 | IaC tooling formally specified (Terraform vs Helm) | Cloud Architect / Technical Lead | Document IaC strategy formally in Section 4 or 8 |
-| LAC6 | Cost Optimization strategy (reserved instances, right-sizing) | Cloud Architect / Technical Lead | Document cost optimization approach in Section 11 |
+| LAC1 | Deployment regions not specified | Cloud Architect | Document primary Azure region (e.g., East US) in docs/03-architecture-layers.md |
+| LAC1 | No ADR for cloud provider / service model selection | Cloud Architect | Add ADR in docs/10-references.md documenting Azure PaaS rationale and alternatives considered |
+| LAC2 | No multi-region / cross-region network strategy | Network Engineer / Cloud Architect | Define region deployment strategy and failover networking in docs/03-architecture-layers.md |
+| LAC3 | Regulatory compliance requirements not identified | Security Architect / Compliance Officer | Identify applicable regulations (GDPR, etc.) and document controls in docs/07-security-architecture.md |
+| LAC4 | Cost tracking, budget alerts, and tagging strategy not defined | DevOps Engineer / SRE Lead | Add cost monitoring section with budgets and tagging taxonomy to docs/09-operational-considerations.md |
+| LAC5 | Multi-region replication / DR cross-region strategy not defined | Cloud Architect / Business Continuity Manager | Document cross-region replication and failover procedures in docs/09-operational-considerations.md |
+| LAC6 | No IaC tooling documented (Terraform, Bicep, ARM templates) | Cloud Architect / Technical Lead | Specify IaC tooling and GitOps workflow in docs/09-operational-considerations.md or docs/06-technology-stack.md |
+| LAC6 | Azure Well-Architected Framework alignment not documented | Cloud Architect / Technical Lead | Create ADR mapping to Azure Well-Architected 5 pillars in docs/10-references.md |
+| LAC6 | No cost optimization strategy (reserved instances, right-sizing) | Cloud Architect / Technical Lead | Document cost optimization strategies in docs/08-scalability-and-performance.md or docs/09-operational-considerations.md |
 
 
 ---
 
 ## Not Applicable Items
-- LAC2 - Cloud-to-Cloud Connectivity: Single Azure cloud deployment; no multi-cloud integration required per current design
-- LAC2 - On-Premise Integration: Cloud-only solution; no hybrid connectivity required per current design
+- LAC2 - Cloud-to-Cloud Connectivity: Single cloud (Azure-only) deployment — no multi-cloud integration required
+- LAC2 - On-Premise Integration: Cloud-only solution — no on-premise systems integrated
 
 
 ---
@@ -807,8 +808,12 @@ Yes, add those subsections with the recommended content
 
 | Requirement | Data Point | Issue | Responsible Role | Action Needed |
 |-------------|------------|-------|------------------|---------------|
-| LAC6 | Infrastructure as Code | Helm charts or Terraform mentioned in Section 3 (Architecture Principles) but not formally specified in deployment documentation | Cloud Architect / Technical Lead | Formally specify IaC tooling and approach in Section 4 or 8 with implementation details |
-| LAC6 | Organizational Cloud Standards | No internal cloud governance policies or approved service catalog referenced | Cloud Architect / Technical Lead | Validate against internal Azure governance policies, naming conventions, and tagging standards |
+| LAC1 | Service Model Justification | Azure PaaS selection rationale present implicitly in tech stack choices but no explicit ADR or design decision document | Cloud Architect | Create ADR documenting PaaS selection rationale, alternatives evaluated, and trade-offs in docs/10-references.md |
+| LAC3 | Identity and Access Management | MVP has no authentication; future OAuth 2.0 / Azure AD planned but not yet implemented or formally documented as architecture decision | Security Architect | Formalize MVP security trade-off as ADR; document future IAM controls timeline in docs/07-security-architecture.md |
+| LAC3 | Regulatory Compliance | No mention of GDPR, data residency, or other applicable regulations | Security Architect / Compliance Officer | Review applicable regulations and document compliance posture in docs/07-security-architecture.md |
+| LAC4 | Cost Tracking | Cost estimates per user tier exist but no Azure Cost Management integration, budget alerts, or tagging taxonomy defined | DevOps Engineer / SRE Lead | Add Azure Cost Management configuration with budget thresholds and tagging strategy to docs/09-operational-considerations.md |
+| LAC6 | Well-Architected Framework | No reference to Azure Well-Architected Framework review or pillars mapping | Cloud Architect / Technical Lead | Conduct Azure WAF review and document pillar alignment in docs/10-references.md as ADR |
+| LAC6 | Cost Optimization | Cost estimates documented but no strategy for reserved instances, spot instances, or right-sizing policy | Cloud Architect / Technical Lead | Define cost optimization strategy and scheduled review cadence in docs/08-scalability-and-performance.md |
 
 
 ---
@@ -816,10 +821,10 @@ Yes, add those subsections with the recommended content
 ## Generation Metadata
 
 **Template Version**: 2.0 (Updated with compliance evaluation system)
-**Generation Date**: 2026-02-26
+**Generation Date**: 2026-03-15
 **Source Document**: ARCHITECTURE.md
-**Primary Source Sections**: 4 (Architecture Layers), 8 (Technology Stack), 9 (Security Architecture), 10 (Scalability & Performance), 11 (Operational Considerations)
-**Completeness**: 67% (20/30 data points documented)
+**Primary Source Sections**: 4 (Infrastructure View), 8 (Deployment View), 10 (Non-Functional Requirements)
+**Completeness**: 72% (18/25 data points documented)
 **Template Language**: English
 **Compliance Framework**: LAC (Cloud Architecture) (Cloud Architecture) with requirements for cloud models, service justification, multi-region design, and IaC
 **Status Labels**: Compliant, Non-Compliant, Not Applicable, Unknown

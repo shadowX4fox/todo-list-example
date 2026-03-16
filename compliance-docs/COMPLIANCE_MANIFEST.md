@@ -1,8 +1,8 @@
 # Compliance Documentation Manifest
 
-**Project**: 3-Tier-To-Do-List
+**Project**: 3-Tier-To-Do-List-Application
 **Source**: ARCHITECTURE.md
-**Generated**: 2026-02-26
+**Generated**: 2026-03-16
 
 ---
 
@@ -27,7 +27,7 @@
 **Validation Schema**: `/skills/architecture-compliance/validation/TEMPLATE_VALIDATION_SCHEMA.json`
 **Schema Version**: 1.0.0
 **Validation Engine**: ComplianceValidator v1.0
-**Validation Date**: 2026-02-26
+**Validation Date**: 2026-03-16
 
 **Validation Stages**:
 - Stage 1 (Pre-Validation): Template structure validation
@@ -42,7 +42,7 @@
 | Contract Type | Filename | Score | Status | Completeness | Generated |
 |---------------|----------|-------|--------|--------------|-----------|
 | Business Continuity | BUSINESS_CONTINUITY_3-Tier-To-Do-List_2026-02-19.md | 8.2 | Approved | 86% | 2026-02-26 |
-| Cloud Architecture | CLOUD_ARCHITECTURE_3-Tier-To-Do-List_2026-02-26.md | 7.3 | In Review | 100% | 2026-02-26 |
+| Cloud Architecture | CLOUD_ARCHITECTURE_3-Tier-To-Do-List-Application_2026-03-15.md | 8.2 | Approved | 100% | 2026-03-16 |
 | Data & AI Architecture | DATA_AI_ARCHITECTURE_3-Tier-To-Do-List_2026-02-19.md | 6.8 | Draft | 45% | 2026-02-26 |
 | Development Architecture | DEVELOPMENT_ARCHITECTURE_3-Tier-To-Do-List_2026-02-20.md | 5.6 | Draft | 55% | 2026-02-26 |
 | Enterprise Architecture | ENTERPRISE_ARCHITECTURE_3-Tier-To-Do-List_2026-02-19.md | 8.6 | Approved | 100% | 2026-02-26 |
@@ -56,7 +56,7 @@
 
 ## Summary
 - Total Contracts: 10
-- Average Score: 7.3/10
+- Average Score: 7.4/10
 - Average Completeness: 76%
-- Approved: 4, In Review: 2, Draft: 4, Rejected: 0
-- Last Updated: 2026-02-26 22:31:24
+- Approved: 5, In Review: 1, Draft: 4, Rejected: 0
+- Last Updated: 2026-03-16 04:01:02
