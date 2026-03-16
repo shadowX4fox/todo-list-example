@@ -1,3 +1,5 @@
+[Architecture](../ARCHITECTURE.md) > Operational Considerations
+
 # 11. Operational Considerations
 
 This section documents deployment, monitoring, logging, and operational procedures.

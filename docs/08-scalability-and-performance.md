@@ -1,3 +1,5 @@
+[Architecture](../ARCHITECTURE.md) > Scalability & Performance
+
 # 10. Scalability & Performance
 
 This section documents performance targets, scaling strategies, and capacity planning.

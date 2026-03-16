@@ -1,3 +1,5 @@
+[Architecture](../ARCHITECTURE.md) > Data Flow Patterns
+
 # 6. Data Flow Patterns
 
 This section describes how data flows through the system for each core use case.

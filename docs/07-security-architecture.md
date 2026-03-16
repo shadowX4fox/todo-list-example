@@ -1,3 +1,5 @@
+[Architecture](../ARCHITECTURE.md) > Security Architecture
+
 # 9. Security Architecture
 
 This section documents security controls, authentication, authorization, and compliance measures.

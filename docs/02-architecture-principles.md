@@ -1,3 +1,5 @@
+[Architecture](../ARCHITECTURE.md) > Architecture Principles
+
 # 3. Architecture Principles
 
 This section defines the architectural principles that guide all technical decisions for the 3-Tier To-Do List Application.

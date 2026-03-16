@@ -1,3 +1,5 @@
+[Architecture](../ARCHITECTURE.md) > Technology Stack
+
 # 8. Technology Stack
 
 This section documents all technologies, frameworks, libraries, and tools used in the system.

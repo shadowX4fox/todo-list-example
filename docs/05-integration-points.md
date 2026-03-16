@@ -1,3 +1,5 @@
+[Architecture](../ARCHITECTURE.md) > Integration Points
+
 # 7. Integration Points
 
 This section documents external systems, APIs, and services that the To-Do List application integrates with.

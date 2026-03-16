@@ -1,3 +1,5 @@
+[Architecture](../ARCHITECTURE.md) > References & ADRs
+
 # 12. Architecture Decision Records (ADRs)
 
 This section tracks key architectural decisions made for the To-Do List application.
