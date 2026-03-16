@@ -111,9 +111,28 @@ The 3-Tier To-Do List Application is a production-ready web application designed
 ```
 todo-list-example/
 ├── README.md                           # This file
-├── ARCHITECTURE.md                     # Comprehensive architecture documentation
+├── ARCHITECTURE.md                     # Navigation index — links to docs/
 ├── PRODUCT_OWNER_SPEC.md              # Product requirements and specifications
 ├── Todo-list-example.pdf              # Project documentation (PDF)
+├── docs/                              # Architecture documentation (modular sections)
+│   ├── 01-system-overview.md
+│   ├── 02-architecture-principles.md
+│   ├── 03-architecture-layers.md
+│   ├── 04-data-flow-patterns.md
+│   ├── 05-integration-points.md
+│   ├── 06-technology-stack.md
+│   ├── 07-security-architecture.md
+│   ├── 08-scalability-and-performance.md
+│   ├── 09-operational-considerations.md
+│   ├── 10-references.md
+│   └── components/                    # Per-component specifications
+│       ├── README.md
+│       ├── 01-angular-web-ui.md
+│       ├── 02-task-rest-api-controller.md
+│       ├── 03-task-service.md
+│       ├── 04-postgresql-database.md
+│       ├── 05-task-repository.md
+│       └── 06-redis-cache.md
 ├── adr/                               # Architecture Decision Records
 │   ├── ADR-001-3tier-architecture.md
 │   ├── ADR-002-spring-boot-backend.md
@@ -124,7 +143,7 @@ todo-list-example/
 │   ├── ADR-007-no-auth-mvp.md
 │   └── ADR-008-hard-delete.md
 └── compliance-docs/                   # Compliance and cloud architecture documentation
-    ├── CLOUD_ARCHITECTURE_3-Tier-To-Do-List_2025-12-23.md
+    ├── CLOUD_ARCHITECTURE_3-Tier-To-Do-List-Application_2026-03-15.md
     └── COMPLIANCE_MANIFEST.md
 ```
 
@@ -252,12 +271,19 @@ curl http://localhost:8080/api/tasks
 ## Documentation
 
 ### Core Documentation
-- **[ARCHITECTURE.md](ARCHITECTURE.md)** - Comprehensive technical architecture documentation (1,800+ lines)
-  - System overview and design principles
-  - Component details and data flows
-  - Security architecture
-  - Scalability and performance
-  - Operational considerations
+- **[ARCHITECTURE.md](ARCHITECTURE.md)** - Navigation index linking to all architecture sections
+- **[docs/](docs/)** - Modular architecture documentation:
+  - [System Overview](docs/01-system-overview.md)
+  - [Architecture Principles](docs/02-architecture-principles.md)
+  - [Architecture Layers](docs/03-architecture-layers.md)
+  - [Data Flow Patterns](docs/04-data-flow-patterns.md)
+  - [Integration Points](docs/05-integration-points.md)
+  - [Technology Stack](docs/06-technology-stack.md)
+  - [Security Architecture](docs/07-security-architecture.md)
+  - [Scalability & Performance](docs/08-scalability-and-performance.md)
+  - [Operational Considerations](docs/09-operational-considerations.md)
+  - [References & ADRs](docs/10-references.md)
+  - [Components](docs/components/README.md)
 
 - **[PRODUCT_OWNER_SPEC.md](PRODUCT_OWNER_SPEC.md)** - Business requirements and product specifications
   - Business objectives and success criteria
@@ -279,7 +305,7 @@ Located in the `/adr` directory, documenting key architectural decisions:
 
 ### Compliance Documentation
 - **[Compliance Manifest](compliance-docs/COMPLIANCE_MANIFEST.md)** - Standards compliance tracking
-- **[Cloud Architecture Document](compliance-docs/CLOUD_ARCHITECTURE_3-Tier-To-Do-List_2025-12-23.md)** - Cloud deployment specifications
+- **[Cloud Architecture Document](compliance-docs/CLOUD_ARCHITECTURE_3-Tier-To-Do-List-Application_2026-03-15.md)** - Cloud deployment specifications
 
 ## Monitoring & Observability
 
@@ -372,5 +398,5 @@ For questions, issues, or feature requests:
 ---
 
 **Version**: 1.0.0
-**Last Updated**: 2025-12-24
+**Last Updated**: 2026-03-15
 **Status**: Production-Ready MVP
