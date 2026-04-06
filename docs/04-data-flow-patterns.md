@@ -42,6 +42,26 @@ Angular UI
 
 **Performance**: Target <500ms (p95) end-to-end (see [Key Metrics](01-system-overview.md#key-metrics))
 
+#### Diagram: Create Task Sequence
+
+```mermaid
+%%{init: {'theme': 'dark'}}%%
+sequenceDiagram
+    participant User as Angular Web UI
+    participant API as Backend API
+    participant DB as PostgreSQL
+    participant Cache as Redis Cache
+
+    Note over User,API: REST/HTTPS
+    User->>+API: POST /api/tasks {"description": "Buy milk"}
+    Note over API: Validate input (non-null, max 500, XSS sanitize)
+    API->>+DB: INSERT INTO tasks (id, description, status, ...)
+    DB-->>-API: UUID generated, committed
+    API-)Cache: EVICT "tasks:all"
+    API-->>-User: 201 Created {id, description, status: "incomplete"}
+    Note over User: Optimistic UI update — render new task
+```
+
 ---
 
 ### Data Flow 2: Retrieve Tasks (Read Operation - Cache Hit)
@@ -67,6 +87,23 @@ Angular UI
 ```
 
 **Performance**: Target <200ms (p95) with cache hit
+
+#### Diagram: Retrieve Tasks (Cache Hit) Sequence
+
+```mermaid
+%%{init: {'theme': 'dark'}}%%
+sequenceDiagram
+    participant User as Angular Web UI
+    participant API as Backend API
+    participant Cache as Redis Cache
+
+    Note over User,API: REST/HTTPS
+    User->>+API: GET /api/tasks
+    API->>+Cache: GET "tasks:all"
+    Cache-->>-API: Cache HIT (JSON array)
+    API-->>-User: 200 OK [{id, description, status}, ...]
+    Note over User: Render task list
+```
 
 ---
 
@@ -103,6 +140,30 @@ Angular UI
 ```
 
 **Performance**: Target <1000ms (p95) with cache miss
+
+#### Diagram: Retrieve Tasks (Cache Miss) Sequence
+
+```mermaid
+%%{init: {'theme': 'dark'}}%%
+sequenceDiagram
+    participant User as Angular Web UI
+    participant API as Backend API
+    participant Cache as Redis Cache
+    participant DB as PostgreSQL
+
+    Note over User,API: REST/HTTPS
+    User->>+API: GET /api/tasks
+    API->>+Cache: GET "tasks:all"
+    Cache-->>-API: Cache MISS
+
+    Note over API,DB: JDBC/TLS
+    API->>+DB: SELECT * FROM tasks ORDER BY created_at DESC
+    DB-->>-API: Result set (all tasks)
+
+    API-)Cache: PUT "tasks:all" (TTL: 5 min)
+    API-->>-User: 200 OK [{id, description, status}, ...]
+    Note over User: Render task list
+```
 
 ---
 
@@ -144,6 +205,32 @@ Angular UI
 
 **Performance**: Target <300ms (p95)
 
+#### Diagram: Update Task Status Sequence
+
+```mermaid
+%%{init: {'theme': 'dark'}}%%
+sequenceDiagram
+    participant User as Angular Web UI
+    participant API as Backend API
+    participant DB as PostgreSQL
+    participant Cache as Redis Cache
+
+    Note over User,API: REST/HTTPS
+    User->>+API: PATCH /api/tasks/{id}
+    API->>+DB: SELECT * FROM tasks WHERE id = ?
+    alt Task found
+        DB-->>API: Task record
+        Note over API: Toggle status (incomplete <-> complete)
+        API->>DB: UPDATE tasks SET status = ?, updated_at = ? WHERE id = ?
+        DB-->>-API: Updated, committed
+        API-)Cache: EVICT "tasks:all"
+        API-->>-User: 200 OK {id, description, status: "complete"}
+    else Task not found
+        DB-->>API: Empty result
+        API-->>User: 404 Not Found
+    end
+```
+
 ---
 
 ### Data Flow 5: Delete Task (Write Operation)
@@ -179,3 +266,23 @@ Angular UI
 ```
 
 **Performance**: Target <300ms (p95)
+
+#### Diagram: Delete Task Sequence
+
+```mermaid
+%%{init: {'theme': 'dark'}}%%
+sequenceDiagram
+    participant User as Angular Web UI
+    participant API as Backend API
+    participant DB as PostgreSQL
+    participant Cache as Redis Cache
+
+    Note over User,API: REST/HTTPS
+    User->>+API: DELETE /api/tasks/{id}
+    Note over API,DB: JDBC/TLS
+    API->>+DB: DELETE FROM tasks WHERE id = ?
+    DB-->>-API: Deleted, committed
+    API-)Cache: EVICT "tasks:all"
+    API-->>-User: 204 No Content
+    Note over User: Remove task from displayed list
+```

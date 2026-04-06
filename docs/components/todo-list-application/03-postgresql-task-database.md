@@ -1,14 +1,18 @@
-[Architecture](../../ARCHITECTURE.md) > [Components](README.md) > PostgreSQL Task Database
+[Architecture](../../../ARCHITECTURE.md) > [Components](../README.md) > [Todo List Application](.) > PostgreSQL Task Database
 
 # PostgreSQL Task Database
 
-**Type**: Relational Database (Managed Service)
-**Technology**: PostgreSQL 15 (Azure Database for PostgreSQL)
+**Type:** Database
+**Technology:** [PostgreSQL 15]
+**C4 Level:** Container (L2)
+**Deploys as:** Azure Database for PostgreSQL (managed service)
+**Communicates via:** PostgreSQL wire protocol (TLS-encrypted), inbound JDBC from Backend API
+
 **Version**: 15.x
 **Location**: Azure-managed instance
 
 **Purpose**:
-Persist task data with ACID guarantees, ensuring zero data loss and supporting high-performance queries for 20 TPS read, 10 TPS write (see [Key Metrics](../01-system-overview.md#key-metrics)).
+Persist task data with ACID guarantees, ensuring zero data loss and supporting high-performance queries for 20 TPS read, 10 TPS write (see [Key Metrics](../../01-system-overview.md#key-metrics)).
 
 **Responsibilities**:
 - Store tasks table with columns: id, description, status, created_at, updated_at
@@ -32,7 +36,7 @@ CREATE INDEX idx_tasks_created_at ON tasks(created_at DESC);
 
 **Dependencies**:
 - **Depends on**: Azure Database for PostgreSQL infrastructure, Azure Blob Storage (backups)
-- **Depended by**: [Task Repository](05-task-repository.md) (Tier 2)
+- **Depended by**: [Task Management Backend API](02-task-management-backend-api.md) (JDBC)
 
 **Configuration**:
 - `DB_HOST`: Database host (Azure-managed endpoint)

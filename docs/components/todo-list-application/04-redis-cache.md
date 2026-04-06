@@ -1,9 +1,13 @@
-[Architecture](../../ARCHITECTURE.md) > [Components](README.md) > Redis Cache Layer
+[Architecture](../../../ARCHITECTURE.md) > [Components](../README.md) > [Todo List Application](.) > Redis Cache
 
-# Redis Cache Layer
+# Redis Cache
 
-**Type**: Distributed Cache (Managed Service)
-**Technology**: Azure Cache for Redis 7.0
+**Type:** Cache
+**Technology:** [Azure Cache for Redis 7.0]
+**C4 Level:** Container (L2)
+**Deploys as:** Azure Cache for Redis (managed service)
+**Communicates via:** Redis protocol (TLS-encrypted), inbound from Backend API
+
 **Version**: 7.0.x
 **Location**: Azure-managed instance
 
@@ -17,12 +21,12 @@ Provide high-performance in-memory caching for task list queries, achieving 80%+
 
 **Cache Strategy**:
 - **Pattern**: Cache-aside (lazy loading)
-- **Read flow**: Check cache → if miss, query DB → populate cache → return data
-- **Write flow**: Update DB → invalidate cache → next read repopulates cache
+- **Read flow**: Check cache -> if miss, query DB -> populate cache -> return data
+- **Write flow**: Update DB -> invalidate cache -> next read repopulates cache
 
 **Dependencies**:
 - **Depends on**: Azure Cache for Redis infrastructure
-- **Depended by**: [Task Service](03-task-service.md) (Tier 2)
+- **Depended by**: [Task Management Backend API](02-task-management-backend-api.md) (Redis protocol)
 
 **Configuration**:
 - `spring.cache.type`: redis

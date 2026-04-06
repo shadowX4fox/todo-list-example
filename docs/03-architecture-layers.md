@@ -3,6 +3,7 @@
 # 4. Architecture Layers
 
 <!-- ARCHITECTURE_TYPE: 3-TIER -->
+<!-- DIAGRAM_THEME: dark -->
 
 **Purpose**: Define the three-tier architecture model that separates presentation, business logic, and data concerns.
 
@@ -20,113 +21,192 @@ This architecture follows the **3-Tier Architecture** pattern, designed for stan
 
 ---
 
-## High-Level System Architecture Diagram
+## Architecture Diagrams
 
-This diagram shows the complete 3-tier architecture with all major components and data flows.
+### Diagram 1: Logical View (3-Tier)
 
-```mermaid
-graph TB
-    %% External Actors
-    User["👤 User<br/>(Web Browser)"]
+```
+┌─────────────────────────────────────────────────────────────────────────────────────────┐
+│                              TIER 1 — PRESENTATION                                      │
+│                                                                                         │
+│   ┌───────────────────────────────────────────────────────────────────────────────┐     │
+│   │  Angular Web UI                                                               │     │
+│   │  [Web Application]                                                            │     │
+│   │  Responsive SPA for task CRUD operations                                      │     │
+│   │  Client-side validation, optimistic UI updates                                │     │
+│   └───────────────────────────────────────────────────────────────────────────────┘     │
+│                                                                                         │
+└─────────────────────────────────────────────────────────────────────────────────────────┘
+                                          │
+                                          ▼  REST/HTTPS (JSON)
+┌─────────────────────────────────────────────────────────────────────────────────────────┐
+│                              TIER 2 — APPLICATION / BUSINESS LOGIC                      │
+│                                                                                         │
+│   ┌───────────────────────────────────────────────────────────────────────────────┐     │
+│   │  Task Management Backend API                                                  │     │
+│   │  [API Service]                                                                │     │
+│   │  REST endpoints, business logic, cache coordination, data access              │     │
+│   │  C3 internals: TaskController, TaskService, TaskRepository                    │     │
+│   └───────────────────────────────────────────────────────────────────────────────┘     │
+│                                                                                         │
+└─────────────────────────────────────────────────────────────────────────────────────────┘
+                              │                               │
+                              ▼  JDBC/TLS                     ▼  Redis protocol/TLS
+┌─────────────────────────────────────────────────────────────────────────────────────────┐
+│                              TIER 3 — DATA                                              │
+│                                                                                         │
+│   Data stores:                                                                          │
+│   ┌─────────────────────────────────┐ ┌─────────────────────────────────────────┐      │
+│   │  PostgreSQL Task Database       │ │  Redis Cache                            │      │
+│   │  [Database]                     │ │  [Cache]                                │      │
+│   │  ACID task persistence          │ │  Cache-aside pattern, 80%+ hit rate     │      │
+│   │  20 TPS read, 10 TPS write     │ │  5-minute TTL on tasks:all key          │      │
+│   └─────────────────────────────────┘ └─────────────────────────────────────────┘      │
+│                                                                                         │
+└─────────────────────────────────────────────────────────────────────────────────────────┘
 
-    %% Tier 1: Presentation Layer
-    subgraph Tier1["🎨 Tier 1: Presentation Layer"]
-        CDN["Azure CDN<br/>(Global Distribution)"]
-        Angular["Angular 17 Web UI<br/>TypeScript 5.x<br/>- Task input form<br/>- Task list display<br/>- Client-side validation"]
-    end
-
-    %% Tier 2: Application/Business Logic Layer
-    subgraph Tier2["⚙️ Tier 2: Application/Business Logic<br/>(Azure Kubernetes Service)"]
-        LB["Azure Load Balancer"]
-        subgraph AKS["AKS Cluster (2-5 nodes)"]
-            Pod1["Spring Boot Pod 1<br/>1 vCPU, 1GB RAM"]
-            Pod2["Spring Boot Pod 2<br/>1 vCPU, 1GB RAM"]
-            Pod3["Spring Boot Pod 3-5<br/>1 vCPU, 1GB RAM<br/>(Auto-scaled)"]
-        end
-        HPA["Horizontal Pod Autoscaler<br/>(CPU > 70%)"]
-    end
-
-    %% Tier 3: Data Layer
-    subgraph Tier3["💾 Tier 3: Data Layer"]
-        Cache["Azure Cache for Redis 7.0<br/>C1 Standard (4GB)<br/>- Cache key: tasks:all<br/>- TTL: 5 minutes<br/>- 80% hit rate target"]
-        DB["Azure Database for PostgreSQL 15<br/>General Purpose (2-4 vCPU, 8GB RAM)<br/>- tasks table<br/>- ACID compliance<br/>- 99.99% uptime SLA"]
-        Backup["Azure Blob Storage<br/>Database Backups<br/>30-day retention"]
-    end
-
-    %% Azure Services
-    subgraph Azure["☁️ Azure Cloud Services"]
-        KeyVault["Azure Key Vault<br/>Secrets Management"]
-        Monitor["Azure Monitor<br/>Logs & Metrics"]
-    end
-
-    %% User to Presentation
-    User -->|"HTTPS/TLS 1.3<br/>GET /tasks<br/>POST /tasks"| CDN
-    CDN -->|"Static Assets<br/>(HTML, CSS, JS)"| Angular
-
-    %% Presentation to Application
-    Angular -->|"REST API Calls<br/>GET /api/tasks<br/>POST /api/tasks<br/>PATCH /api/tasks/{id}<br/>DELETE /api/tasks/{id}"| LB
-
-    %% Load Balancer to Pods
-    LB --> Pod1
-    LB --> Pod2
-    LB --> Pod3
-
-    %% Application to Cache (Read Flow)
-    Pod1 -.->|"1. Check Cache<br/>(80% hit rate)"| Cache
-    Pod2 -.->|"1. Check Cache<br/>(80% hit rate)"| Cache
-    Pod3 -.->|"1. Check Cache<br/>(80% hit rate)"| Cache
-
-    %% Application to Database (Write + Cache Miss)
-    Pod1 -->|"2. Cache Miss<br/>SQL Queries<br/>(20% of reads)"| DB
-    Pod2 -->|"Write Operations<br/>INSERT/UPDATE/DELETE"| DB
-    Pod3 -->|"2. Cache Miss<br/>SQL Queries<br/>(20% of reads)"| DB
-
-    %% Cache Invalidation (Write Flow)
-    Pod1 -.->|"3. Invalidate Cache<br/>(on write ops)"| Cache
-    Pod2 -.->|"3. Invalidate Cache<br/>(on write ops)"| Cache
-    Pod3 -.->|"3. Invalidate Cache<br/>(on write ops)"| Cache
-
-    %% Database to Backup
-    DB -->|"Daily Automated Backups"| Backup
-
-    %% Auto-scaling
-    HPA -.->|"Monitors & Scales"| AKS
-
-    %% Azure Services Integration
-    Pod1 -.->|"Retrieve Secrets"| KeyVault
-    Pod2 -.->|"Retrieve Secrets"| KeyVault
-    Pod3 -.->|"Retrieve Secrets"| KeyVault
-    AKS -.->|"Logs & Metrics"| Monitor
-    DB -.->|"Logs & Metrics"| Monitor
-    Cache -.->|"Logs & Metrics"| Monitor
-
-    %% Styling
-    classDef presentation fill:#4A90E2,stroke:#2E5C8A,stroke-width:3px,color:#fff
-    classDef application fill:#F5A623,stroke:#B8791A,stroke-width:3px,color:#fff
-    classDef data fill:#7ED321,stroke:#5A9B18,stroke-width:3px,color:#fff
-    classDef cache fill:#BD10E0,stroke:#8A0CA3,stroke-width:3px,color:#fff
-    classDef azure fill:#0078D4,stroke:#005A9E,stroke-width:2px,color:#fff
-
-    class User,CDN,Angular presentation
-    class LB,Pod1,Pod2,Pod3,AKS,HPA application
-    class DB,Backup data
-    class Cache cache
-    class KeyVault,Monitor,Azure azure
+Legend:
+  ▼  = Synchronous call (request flows top → down)
+  [Type] = C4 L2 container type
+  All application services: Spring Boot 3.2 on Azure AKS (min 2 replicas)
+  Response path: implicit — bottom → up via same protocol
 ```
 
-**Diagram Description:**
+**Reading the diagram:**
+- Solid arrows (`▼`) represent synchronous runtime calls with the protocol labeled
+- Each box is a C4 Level 2 container — an independently deployable unit
+- The Backend API is a single container; its internal layers (Controller, Service, Repository) are C3 components visible in the [component file](components/todo-list-application/02-task-management-backend-api.md)
 
-This high-level architecture diagram illustrates the complete 3-tier system with data flows:
+---
 
-- **Tier 1 (Presentation)**: Users interact with Angular 17 web UI served via Azure CDN for global distribution
-- **Tier 2 (Application/Business Logic)**: Azure Load Balancer distributes requests across 2-5 Spring Boot pods in AKS cluster. Horizontal Pod Autoscaler monitors CPU usage and scales pods when CPU > 70%
-- **Tier 3 (Data)**: Redis cache provides 80% cache hit rate for read operations. PostgreSQL database handles all write operations and cache misses (20% of reads). Daily backups stored in Azure Blob Storage
+### Diagram 2: C4 Level 1 — System Context
 
-**Data Flow Patterns:**
+```mermaid
+%%{init: {'theme': 'dark'}}%%
+C4Context
+    title System Context Diagram — Todo List Application
 
-1. **Read Flow (Cache Hit - 80%)**: Angular → Load Balancer → Spring Boot Pod → Redis Cache → Response
-2. **Read Flow (Cache Miss - 20%)**: Angular → Load Balancer → Spring Boot Pod → PostgreSQL → Populate Cache → Response
-3. **Write Flow**: Angular → Load Balancer → Spring Boot Pod → PostgreSQL → Invalidate Cache → Response
+    Person(user, "User", "Manages personal tasks via web browser")
+
+    System(todoApp, "Todo List Application", "3-tier web application for task management — Angular, Spring Boot, PostgreSQL")
+
+    System_Ext(azureBlob, "Azure Blob Storage", "Automated database backup storage")
+    System_Ext(azureMonitor, "Azure Monitor", "Centralized logging and metrics")
+    System_Ext(azureKV, "Azure Key Vault", "Secret management for credentials")
+
+    Rel(user, todoApp, "Add, view, complete, delete tasks", "HTTPS/TLS 1.3")
+    Rel(todoApp, azureBlob, "Daily automated backups", "HTTPS")
+    Rel(todoApp, azureMonitor, "Logs and metrics", "Azure SDK")
+    Rel(todoApp, azureKV, "Retrieve secrets", "Azure SDK")
+```
+
+---
+
+### Diagram 3: C4 Level 2 — Container
+
+```mermaid
+%%{init: {'theme': 'dark'}}%%
+C4Container
+    title Container Diagram — Todo List Application
+
+    Person(user, "User", "Web browser user")
+
+    Container_Boundary(sys, "Todo List Application") {
+
+        Container(webUI, "Angular Web UI", "Angular 17, TypeScript 5.x", "Responsive SPA for task CRUD operations")
+        Container(backendAPI, "Task Management Backend API", "Spring Boot 3.2, Java 17", "REST endpoints, business logic, cache coordination, data access")
+
+        ContainerDb(postgres, "PostgreSQL Task Database", "PostgreSQL 15", "ACID task persistence with UUID primary keys")
+        ContainerDb(redis, "Redis Cache", "Azure Cache for Redis 7.0", "Cache-aside pattern for task list queries, 80%+ hit rate")
+
+    }
+
+    System_Ext(azureBlob, "Azure Blob Storage", "Database backup storage")
+
+    Rel(user, webUI, "Manages tasks", "HTTPS/TLS 1.3")
+    Rel(webUI, backendAPI, "API calls (CRUD)", "REST/HTTPS")
+    Rel(backendAPI, postgres, "Reads/writes task data", "JDBC/TLS")
+    Rel(backendAPI, redis, "Cache read/write/invalidate", "Redis protocol/TLS")
+    Rel(postgres, azureBlob, "Daily automated backups", "Azure managed")
+```
+
+---
+
+### Diagram 4: Detailed View
+
+```mermaid
+%%{init: {'theme': 'dark'}}%%
+graph TB
+    subgraph Tier1["Tier 1: Presentation"]
+        USER["User\n(Web Browser)"]
+        CDN["Azure CDN\n(Global Distribution)"]
+        ANGULAR["Angular Web UI\n[Web Application]\nAngular 17, TypeScript 5.x\nTask CRUD SPA"]
+    end
+
+    subgraph Tier2["Tier 2: Application / Business Logic\n(Azure Kubernetes Service)"]
+        LB["Azure Load Balancer"]
+        BACKEND["Task Management Backend API\n[API Service]\nSpring Boot 3.2, Java 17\nREST + Business Logic + Data Access"]
+        HPA["HPA\n(CPU > 70%)"]
+    end
+
+    subgraph Tier3["Tier 3: Data"]
+        REDIS["Redis Cache\n[Cache]\nAzure Cache for Redis 7.0\nkeys: tasks:all, TTL: 5min"]
+        POSTGRES["PostgreSQL Task Database\n[Database]\nPostgreSQL 15 (Azure Managed)\ntasks table, ACID, 99.99% SLA"]
+        BACKUP["Azure Blob Storage\nDatabase Backups\n30-day retention"]
+    end
+
+    subgraph AzureSvc["Azure Cloud Services"]
+        KV["Azure Key Vault\nSecrets Management"]
+        MON["Azure Monitor\nLogs and Metrics"]
+    end
+
+    %% Tier 1 flows
+    USER -->|"HTTPS/TLS 1.3"| CDN
+    CDN -->|"Static Assets\n(HTML, CSS, JS)"| ANGULAR
+
+    %% Tier 1 → Tier 2
+    ANGULAR -->|"REST/HTTPS\nGET/POST/PATCH/DELETE\n/api/tasks"| LB
+    LB -->|"Round-robin"| BACKEND
+
+    %% Tier 2 → Tier 3
+    BACKEND -->|"JDBC/TLS\nSQL queries\n(writes + cache miss reads)"| POSTGRES
+    BACKEND -.->|"Redis protocol/TLS\n1. Check cache (80% hit)\n3. Invalidate on write"| REDIS
+
+    %% Backups
+    POSTGRES -->|"Daily automated\nbackups"| BACKUP
+
+    %% Auto-scaling
+    HPA -.->|"Monitors and scales\n2-10 pods"| BACKEND
+
+    %% Azure services
+    BACKEND -.->|"Retrieve secrets"| KV
+    BACKEND -.->|"Logs and metrics"| MON
+    POSTGRES -.->|"Metrics"| MON
+    REDIS -.->|"Metrics"| MON
+
+    %% Styling (dark theme — 3-TIER palette)
+    classDef presentation fill:#5BA0F2,stroke:#7DB8FF,stroke-width:2px,color:#fff
+    classDef logic fill:#FFB83D,stroke:#FFCE6D,stroke-width:2px,color:#000
+    classDef data fill:#5CAE20,stroke:#78D040,stroke-width:2px,color:#000
+    classDef azure fill:#0078D4,stroke:#409CFF,stroke-width:2px,color:#fff
+
+    class USER,CDN,ANGULAR presentation
+    class LB,BACKEND,HPA logic
+    class REDIS,POSTGRES,BACKUP data
+    class KV,MON azure
+```
+
+**Diagram Legend:**
+
+**Arrow Types:**
+- **Solid arrows (-->)**: Synchronous calls (REST, JDBC)
+- **Dashed arrows (-.->)**: Async/infrastructure flows (cache, monitoring, secrets)
+
+**Component Colors (dark theme):**
+- **Blue**: Presentation tier (Angular Web UI, CDN)
+- **Orange**: Application/Logic tier (Backend API, Load Balancer, HPA)
+- **Green**: Data tier (PostgreSQL, Redis, Blob Storage)
+- **Azure Blue**: Azure cloud services (Key Vault, Monitor)
 
 **Performance Targets** (see [Key Metrics](01-system-overview.md#key-metrics)):
 - Read operations: <1000ms (p95)

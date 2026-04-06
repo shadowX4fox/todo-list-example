@@ -16,7 +16,7 @@
 | 1+2 | Executive Summary & System Overview | [docs/01-system-overview.md](docs/01-system-overview.md) | Purpose, key metrics, business value, use cases |
 | 3 | Architecture Principles | [docs/02-architecture-principles.md](docs/02-architecture-principles.md) | 9 guiding principles with trade-offs |
 | 4 | Architecture Layers | [docs/03-architecture-layers.md](docs/03-architecture-layers.md) | 3-tier model, Mermaid diagram, data flows |
-| 5 | Component Details | [docs/components/README.md](docs/components/README.md) | Index of all 6 components |
+| 5 | Component Details | [docs/components/README.md](docs/components/README.md) | 1 system, 4 containers (C4 model) |
 | 6 | Data Flow Patterns | [docs/04-data-flow-patterns.md](docs/04-data-flow-patterns.md) | 5 detailed data flow sequences |
 | 7 | Integration Points | [docs/05-integration-points.md](docs/05-integration-points.md) | Azure AKS, PostgreSQL, Redis, Blob Storage |
 | 8 | Technology Stack | [docs/06-technology-stack.md](docs/06-technology-stack.md) | All technologies, versions, justifications |
@@ -29,16 +29,14 @@
 
 ---
 
-## Components
+## Components (C4 Model)
 
-| # | Component | Tier | File |
+| # | Container | Type | File |
 |---|-----------|------|------|
-| 01 | Angular Task Management Web UI | Tier 1: Presentation | [docs/components/01-angular-web-ui.md](docs/components/01-angular-web-ui.md) |
-| 02 | Task REST API Controller | Tier 2: Application | [docs/components/02-task-rest-api-controller.md](docs/components/02-task-rest-api-controller.md) |
-| 03 | Task Service (Business Logic) | Tier 2: Application | [docs/components/03-task-service.md](docs/components/03-task-service.md) |
-| 04 | PostgreSQL Task Database | Tier 3: Data | [docs/components/04-postgresql-database.md](docs/components/04-postgresql-database.md) |
-| 05 | Task Repository (Data Access Layer) | Tier 3: Data | [docs/components/05-task-repository.md](docs/components/05-task-repository.md) |
-| 06 | Redis Cache Layer | Tier 3: Data | [docs/components/06-redis-cache.md](docs/components/06-redis-cache.md) |
+| 5.1 | Angular Web UI | Web Application | [docs/components/todo-list-application/01-angular-web-ui.md](docs/components/todo-list-application/01-angular-web-ui.md) |
+| 5.2 | Task Management Backend API | API Service | [docs/components/todo-list-application/02-task-management-backend-api.md](docs/components/todo-list-application/02-task-management-backend-api.md) |
+| 5.3 | PostgreSQL Task Database | Database | [docs/components/todo-list-application/03-postgresql-task-database.md](docs/components/todo-list-application/03-postgresql-task-database.md) |
+| 5.4 | Redis Cache | Cache | [docs/components/todo-list-application/04-redis-cache.md](docs/components/todo-list-application/04-redis-cache.md) |
 
 ---
 

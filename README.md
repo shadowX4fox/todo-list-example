@@ -125,14 +125,14 @@ todo-list-example/
 │   ├── 08-scalability-and-performance.md
 │   ├── 09-operational-considerations.md
 │   ├── 10-references.md
-│   └── components/                    # Per-component specifications
+│   └── components/                    # Per-component specifications (C4 model)
 │       ├── README.md
-│       ├── 01-angular-web-ui.md
-│       ├── 02-task-rest-api-controller.md
-│       ├── 03-task-service.md
-│       ├── 04-postgresql-database.md
-│       ├── 05-task-repository.md
-│       └── 06-redis-cache.md
+│       ├── todo-list-application.md   # C4 L1 System descriptor
+│       └── todo-list-application/     # C4 L2 Containers
+│           ├── 01-angular-web-ui.md
+│           ├── 02-task-management-backend-api.md
+│           ├── 03-postgresql-task-database.md
+│           └── 04-redis-cache.md
 ├── adr/                               # Architecture Decision Records
 │   ├── ADR-001-3tier-architecture.md
 │   ├── ADR-002-spring-boot-backend.md

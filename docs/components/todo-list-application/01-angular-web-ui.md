@@ -1,9 +1,13 @@
-[Architecture](../../ARCHITECTURE.md) > [Components](README.md) > Angular Task Management Web UI
+[Architecture](../../../ARCHITECTURE.md) > [Components](../README.md) > [Todo List Application](.) > Angular Web UI
 
-# Angular Task Management Web UI
+# Angular Web UI
 
-**Type**: Web UI (Single-Page Application)
-**Technology**: Angular 17, TypeScript 5.x
+**Type:** Web Application
+**Technology:** [Angular 17, TypeScript 5.x]
+**C4 Level:** Container (L2)
+**Deploys as:** Static SPA served via Azure CDN
+**Communicates via:** REST/HTTPS to Backend API
+
 **Version**: 1.0.0
 **Location**: `todo-list-ui/` repository
 
@@ -25,7 +29,7 @@ Provide a responsive, intuitive web interface for users to manage tasks (add, vi
 - **Error Messages**: Toast notifications for errors
 
 **Dependencies**:
-- **Depends on**: Task REST API (Tier 2, Spring Boot) — see [Task REST API Controller](02-task-rest-api-controller.md)
+- **Depends on**: [Task Management Backend API](02-task-management-backend-api.md) (REST/HTTPS)
 - **Depended by**: End users via web browsers (Chrome, Firefox, Safari, Edge)
 
 **Configuration**:
